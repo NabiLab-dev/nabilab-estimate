@@ -484,30 +484,19 @@
       <div class="card-icon ci-blue">📝</div>
       <span class="card-title">기타정보</span>
     </div>
-    <div class="frow frow-2">
+    <div class="frow frow-1">
       <div class="fgroup">
         <label>견적유효기간</label>
         <input type="text" id="quote-validity" value="견적일로부터 4주">
       </div>
-      <div class="fgroup">
-        <label>납기일 <span class="req">*</span></label>
-        <input type="text" id="delivery-date" value="계약금 입금 후 착공일 협의" required>
-      </div>
     </div>
     <div class="frow frow-1">
       <div class="fgroup">
-        <label>시공안내 <span class="req">*</span></label>
-        <select id="product-training" required>
-          <option value="">선택하세요</option>
-          <option value="담당 시공팀이 방문하여 작업 진행합니다.">담당 시공팀이 방문하여 작업 진행합니다.</option>
-          <option value="시공 전 현장 실측 후 최종 견적 확정됩니다.">시공 전 현장 실측 후 최종 견적 확정됩니다.</option>
-        </select>
-      </div>
-    </div>
-    <div class="frow frow-1">
-      <div class="fgroup">
-        <label>기타 안내사항</label>
-        <input type="text" id="extra-note" value="부가세(VAT) 별도입니다. 철거 비용 포함 여부는 품목별 옵션에서 선택해주세요.">
+        <label>비고</label>
+        <textarea id="extra-note" rows="5" style="width:100%;padding:10px;border:1.5px solid #c7d2fe;border-radius:10px;font-size:14px;resize:vertical;font-family:inherit;">시공예정일:
+하자보증기간: 2년
+결제조건: 계약금 30% / 잔금 70% (준공 시)
+특이사항: </textarea>
       </div>
     </div>
   </div>
@@ -855,8 +844,6 @@ function collectEstimateData() {
     receiver_phone:        document.getElementById('receiver-phone').value,
     product_category:      '인테리어',
     quote_validity:        document.getElementById('quote-validity').value,
-    delivery_date:         document.getElementById('delivery-date').value,
-    product_training:      document.getElementById('product-training').value,
     extra_note:            document.getElementById('extra-note').value,
     total_area:            document.getElementById('total-area').value || '',
     fileId:                fileId,
@@ -870,14 +857,10 @@ function validateForm() {
   const number         = document.getElementById('number').value;
   const supplierPerson = document.getElementById('supplier-person').value;
   const receiverCompany= document.getElementById('receiver-company').value;
-  const deliveryDate   = document.getElementById('delivery-date').value;
-  const productTraining= document.getElementById('product-training').value;
   if (!date)            { alert('견적일자를 입력해 주세요.');         return false; }
   if (!number)          { alert('견적번호를 입력해 주세요.');         return false; }
   if (!supplierPerson)  { alert('담당자를 선택해 주세요.');           return false; }
   if (!receiverCompany) { alert('수신자 회사명/고객명을 입력해 주세요.'); return false; }
-  if (!deliveryDate)    { alert('납기일을 입력해 주세요.');           return false; }
-  if (!productTraining) { alert('시공안내를 선택해 주세요.');         return false; }
   const cards = document.querySelectorAll('.item-card');
   if (cards.length === 0) { alert('품목을 1개 이상 추가해 주세요.'); return false; }
   for (let i = 0; i < cards.length; i++) {
@@ -1007,16 +990,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const dateInput = document.getElementById('date');
   if (!dateInput.value) dateInput.value = today;
 
-  document.getElementById('product-training').addEventListener('change', function() {
-    if (!this.value) return;
-    const v   = this.value;
-    const inp = document.createElement('input');
-    inp.type = 'text'; inp.id = 'product-training'; inp.value = v;
-    inp.placeholder = '시공안내 내용을 수정하세요';
-    inp.style.cssText = 'width:100%;padding:11px 14px;border:1.5px solid #E5E7EB;border-radius:12px;font-size:14px;font-family:inherit;';
-    this.parentNode.replaceChild(inp, this);
-    inp.focus();
-  });
 });
 </script>
 </body>

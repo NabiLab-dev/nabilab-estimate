@@ -39,9 +39,7 @@ CELL_MAP = {
     "products[9][qty]":    "D25", "products[9][price]":  "E25", "products[9][total]": "F25",
 
     "quote_validity":    "B30",
-    "delivery_date":     "B33",
-    "product_training":  "B32",
-    "extra_note":        "B34",
+    "extra_note":        "B32",
 }
 
 # ── API 설정 ──────────────────────────────────────────────────
