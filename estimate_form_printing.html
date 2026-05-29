@@ -385,13 +385,7 @@
     <div class="frow frow-1" style="position:relative;">
       <div class="fgroup">
         <label>회사명 <span class="req">*</span></label>
-        <input type="text" id="receiver-company" required placeholder="회사명을 입력하세요" autocomplete="off">
-        <input type="hidden" id="pipedrive-deal-id">
-        <div id="deal-search-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1.5px solid var(--primary-mid);border-radius:0 0 14px 14px;z-index:999;max-height:220px;overflow-y:auto;box-shadow:0 8px 24px rgba(8,145,178,.12);"></div>
-        <div id="deal-selected-badge" style="display:none;margin-top:6px;padding:8px 12px;background:var(--primary-light);border:1.5px solid var(--primary-mid);border-radius:10px;font-size:13px;color:#0E7490;">
-          ✅ 선택: <strong id="deal-selected-title"></strong>
-          <span onclick="clearDealSelection()" style="float:right;cursor:pointer;color:var(--text-mute);">✕</span>
-        </div>
+        <input type="text" id="receiver-company" required placeholder="회사명을 입력하세요">
       </div>
     </div>
     <div class="frow frow-2">
@@ -1020,61 +1014,6 @@ function saveLocalCount(yymmdd, id, count) {
 }
 document.getElementById('date').addEventListener('change', autoFillEstimateNumber);
 
-// ===== Pipedrive 거래 검색 =====
-(function() {
-  const API_BASE = 'https://auto-estimate.onrender.com';
-  let searchTimer = null;
-  document.getElementById('receiver-company').addEventListener('input', function() {
-    clearTimeout(searchTimer);
-    const q        = this.value.trim();
-    const dropdown = document.getElementById('deal-search-dropdown');
-    if (q.length < 2) { dropdown.style.display = 'none'; return; }
-    searchTimer = setTimeout(() => searchDeals(q), 350);
-  });
-  document.getElementById('receiver-company').addEventListener('blur', function() {
-    setTimeout(() => { document.getElementById('deal-search-dropdown').style.display = 'none'; }, 200);
-  });
-  window.searchDeals = async function(q) {
-    const dropdown = document.getElementById('deal-search-dropdown');
-    dropdown.innerHTML = '<div style="padding:10px;color:#999;font-size:13px;">검색 중...</div>';
-    dropdown.style.display = 'block';
-    try {
-      const res  = await fetch(`${API_BASE}/search-deals?q=${encodeURIComponent(q)}`);
-      const json = await res.json();
-      if (!json.deals || json.deals.length === 0) {
-        dropdown.innerHTML = '<div style="padding:10px;color:#999;font-size:13px;">검색 결과 없음</div>';
-        return;
-      }
-      dropdown.innerHTML = json.deals.map(deal => {
-        const statusBadge = deal.status === 'won' ? ' 🏆' : deal.status === 'lost' ? ' ❌' : '';
-        const valueStr    = deal.value && deal.value !== '-' ? `${deal.value} ${deal.currency}` : '금액미입력';
-        return `<div onclick="selectDeal(${deal.id}, '${(deal.title||'').replace(/'/g,"\\'")}', '${(deal.org_name||'').replace(/'/g,"\\'")}')\"
-          style="padding:10px 14px;cursor:pointer;border-bottom:1px solid #F3F4F6;font-size:13px;"
-          onmouseover="this.style.background='#ECFEFF'" onmouseout="this.style.background=''">
-          <div style="font-weight:700;color:#0891B2;">${deal.title}${statusBadge}</div>
-          <div style="color:#6B7280;margin-top:3px;display:flex;gap:10px;font-size:12px;">
-            <span>🏢 ${deal.org_name || '-'}</span><span>💰 ${valueStr}</span>
-          </div>
-        </div>`;
-      }).join('');
-    } catch(e) {
-      dropdown.innerHTML = '<div style="padding:10px;color:#EF4444;font-size:13px;">검색 오류</div>';
-    }
-  };
-  window.selectDeal = function(id, title, orgName) {
-    document.getElementById('pipedrive-deal-id').value              = id;
-    document.getElementById('deal-selected-title').textContent      = title;
-    document.getElementById('deal-selected-badge').style.display    = 'block';
-    document.getElementById('deal-search-dropdown').style.display   = 'none';
-    if (orgName && !document.getElementById('receiver-company').value)
-      document.getElementById('receiver-company').value = orgName;
-  };
-  window.clearDealSelection = function() {
-    document.getElementById('pipedrive-deal-id').value              = '';
-    document.getElementById('deal-selected-badge').style.display    = 'none';
-    document.getElementById('deal-selected-title').textContent      = '';
-  };
-})();
 
 // ===== 데이터 수집 =====
 function collectEstimateData() {
@@ -1133,7 +1072,6 @@ function collectEstimateData() {
     supplier_email:        document.getElementById('supplier-email').value,
     supplier_phone:        document.getElementById('supplier-phone').value,
     receiver_company:      document.getElementById('receiver-company').value,
-    pipedrive_deal_id:     document.getElementById('pipedrive-deal-id').value || null,
     receiver_person:       document.getElementById('receiver-person').value,
     receiver_email:        document.getElementById('receiver-email').value,
     receiver_phone:        document.getElementById('receiver-phone').value,
