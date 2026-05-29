@@ -234,6 +234,46 @@ async def create_estimate_template(request: Request):
     return result
 
 
+# ── 드라이브 진단 ───────────────────────────────────────────────
+@app.get("/debug-drive")
+async def debug_drive():
+    try:
+        creds, gc, drive_service = get_google_clients()
+        if not creds:
+            return {"status": "error", "step": "credentials", "msg": "자격증명 로드 실패"}
+
+        # 템플릿 파일 접근 테스트
+        try:
+            file_info = drive_service.files().get(
+                fileId=INTERIOR_TEMPLATE_SHEET_ID,
+                fields="id,name,permissions",
+                supportsAllDrives=True
+            ).execute()
+            template_ok = {"id": file_info["id"], "name": file_info["name"]}
+        except Exception as e:
+            return {"status": "error", "step": "template_read", "msg": str(e)}
+
+        # 폴더 접근 테스트
+        try:
+            folder_info = drive_service.files().get(
+                fileId=INTERIOR_PDF_FOLDER_ID,
+                fields="id,name",
+                supportsAllDrives=True
+            ).execute()
+            folder_ok = {"id": folder_info["id"], "name": folder_info["name"]}
+        except Exception as e:
+            return {"status": "error", "step": "folder_read", "msg": str(e)}
+
+        return {
+            "status": "success",
+            "template": template_ok,
+            "folder": folder_ok,
+            "creds_valid": True
+        }
+    except Exception as e:
+        return {"status": "error", "step": "unknown", "msg": str(e)}
+
+
 # ── CELL_MAP 확인 ───────────────────────────────────────────────
 @app.get("/test-cell-map")
 async def test_cell_map():
