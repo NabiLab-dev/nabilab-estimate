@@ -224,7 +224,11 @@ def copy_estimate_template(category: str = "interior"):
 
 @app.post("/create-estimate-template")
 async def create_estimate_template(request: Request):
-    data = await request.json() if request.headers.get("content-type") == "application/json" else {}
+    try:
+        body = await request.body()
+        data = json.loads(body) if body else {}
+    except Exception:
+        data = {}
     category = data.get("category", "interior")
     result = copy_estimate_template(category)
     return result

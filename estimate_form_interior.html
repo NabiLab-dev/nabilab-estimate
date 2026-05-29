@@ -883,7 +883,7 @@ async function sendEstimate() {
     if (!fileId || fileId.includes('{{')) {
       try {
         const templateRes    = await fetch('https://nabilab-estimate.onrender.com/create-estimate-template',
-          { method:'POST', headers:{'Content-Type':'application/json'} });
+          { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({category:'interior'}) });
         const templateResult = await templateRes.json();
         if (templateResult.status === 'success') {
           fileId       = templateResult.file_id;

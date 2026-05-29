@@ -1110,7 +1110,7 @@ async function sendEstimateToFastAPI() {
     if (!fileId || fileId.includes('{{')) {
       try {
         const tRes = await fetch('https://nabilab-estimate.onrender.com/create-estimate-template',
-          { method:'POST', headers:{'Content-Type':'application/json'} });
+          { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({category:'printing'}) });
         const tResult = await tRes.json();
         if (tResult.status === 'success') {
           fileId = tResult.file_id; data.fileId = fileId;
