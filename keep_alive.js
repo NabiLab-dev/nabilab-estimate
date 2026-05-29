@@ -2,7 +2,7 @@
 // 브라우저에서 실행하여 서버가 슬립 모드로 전환되는 것을 방지
 
 const KEEP_ALIVE_INTERVAL = 10 * 60 * 1000; // 10분마다
-const SERVER_URL = 'https://auto-estimate.onrender.com';
+const SERVER_URL = 'https://nabilab-estimate.onrender.com';
 
 function keepAlive() {
     fetch(`${SERVER_URL}/ping`)

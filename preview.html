@@ -396,7 +396,7 @@ async function generatePDF() {
     // 1단계: PDF 생성 및 업로드
     console.log('1단계: PDF 생성 및 업로드 시작...');
     
-    const response = await fetch('https://auto-estimate.onrender.com/collect-data', {
+    const response = await fetch('https://nabilab-estimate.onrender.com/collect-data', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
